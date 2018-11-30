@@ -34,37 +34,53 @@ option1: LDA     select, d
          CPA     1, i
          BRNE    option2
          CALL    maximus
-         BR      exit
+         BR      reset
 
          ; process option 2
 option2: CPA     2, i
          BRNE    option3 
          CALL    trisort   
-         BR      exit
+         BR      reset
 
          ; process option 3
 option3: CPA     3, i
          BRNE    option4 
          CALL    looper  
-         BR      exit
+         BR      reset
 
          ; process option 4
 option4: CPA     4, i
          BRNE    option5 
          CALL    multi 
-         BR      exit
+         BR      reset
 
          ; process option 5
 option5: CPA     5, i
          BRNE    error 
          CALL    square     
+         BR      reset
+
+
+reset:   STRO    resetmsg,d
+         STRO    reset_1,d
+         STRO    reset_2,d
+         STRO    reset_3,d
+         DECI    r_input,d
+
+roption1:LDA     r_input,d
+         CPA     1,i
+         BRNE    roption2
+         CALL    reset1        
+         BR      exit
+
+roption2:CPA     2,i
+         BRNE    error
+         CALL    reset2 
          BR      exit
 
          ; user entered invalid input
 error:   STRO    error2,d
          BR      exit                 ; Is this branch needed?
-
-
 exit:    STRO    exitmsg, d
          STOP
 
@@ -234,6 +250,25 @@ s_square:LDA s_count,d
 s_end:   STRO s_msg,d
          DECO s_answer,d
 s_done:  RET0
+
+reset1:  LDA     0,i ; Loads 0 into the accumlator
+         STA     m_num1,d ; Setting every variable back to 0
+         STA     m_num2,d
+         STA     t_num1,d
+         STA     t_num2,d
+         STA     t_num3,d
+         STA     t_temp,d 
+         STA     l_count,d
+         STA     product,d
+         STA     x_num1,d
+         STA     x_num2,d
+         STA     x_input,d
+         STA     s_num,d
+         STA     s_count,d
+         STA     s_answer,d
+         BR      main
+reset2:  RET0
+         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;
 ;        DATA SECTION 
@@ -253,9 +288,14 @@ menu5:   .ASCII  "     5. Run the Squaring program \n\x00"
 msg1:    .ASCII  "main(): Proceeding to function call\n\x00" 
 msg2:    .ASCII  "main(): Returned from function call\n\x00"
 exitmsg: .ASCII  "\nEnd of run\x00"
-error1:   .ASCII  "\nError main()01: This function has not yet been implemented.\n\n\x00"
-error2:   .ASCII  "\nError main()02: Invalid selection... and you are a loser for selecting it.\n\n\x00"
+error1:   .ASCII "\nError main()01: This function has not yet been implemented.\n\n\x00"
+error2:   .ASCII "\nError main()02: Invalid selection... and you are a loser for selecting it.\n\n\x00"
 select:  .BLOCK 2
+resetmsg:   .ASCII  "Would you like to use another program?\n\x00" 
+r_input: .BLOCK 2
+reset_1:  .ASCII "     1. Yes\n\x00" 
+reset_2:  .ASCII "     2. No\n\x00"
+reset_3:  .ASCII "Please Make Your Selection: \x00"
 
 ;
 ; maximus variables and strings
@@ -265,7 +305,7 @@ m_num2:  .BLOCK  2
 m_hello: .ASCII "\nExecuting maximus()... \x00"
 m_prmt1: .ASCII "Please enter the first number: \x00"
 m_prmt2: .ASCII "Please enter the second number: \x00"
-m_msg1:  .ASCII "The maximum number is: \x00"
+m_msg1:  .ASCII "The maximum number is: \n\x00"
 m_msg2:  .ASCII "The numbers are equal. \n\x00"  
 
 ;
@@ -277,7 +317,7 @@ t_num2: .BLOCK 2
 t_num3: .BLOCK 2
 t_temp: .BLOCK 2
 t_space: .ASCII " "
-t_out: .ASCII "The 3 Numbers in Ascending Order are: \x00" 
+t_out: .ASCII "The 3 Numbers in Ascending Order are: \n\x00" 
 
 ;
 ;  Looper Variables and Strings
@@ -295,7 +335,7 @@ x_num2:   .BLOCK 2
 firstmsg: .ASCII "Input a Decimal Number \x00"
 x_msg2:   .ASCII "Input a Decimal Number \x00"
 x_input:  .BLOCK 2
-x_answer: .ASCII "The Product is: \x00"
+x_answer: .ASCII "The Product is: \n\x00"
 
 
 ;
@@ -304,6 +344,6 @@ x_answer: .ASCII "The Product is: \x00"
 s_input:  .ASCII "Input a number you would like to square \x00" 
 s_num:    .BLOCK 2
 s_count:  .BLOCK 2
-s_msg:    .ASCII "Your answer is: \x00"
+s_msg:    .ASCII "Your answer is: \n\x00"
 s_answer: .BLOCK 2
          .END
