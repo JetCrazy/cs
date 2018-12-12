@@ -32,8 +32,23 @@ flag:    LDA     flag,d
          DECI    seed,d
          LDA     1,i
          STA     flag,d
-rand:    LDA     p1,d
-          
+
+multiply:LDA     p1,d
+         CPA     0,i
+         BRLE    add_p2
+         LDA     seed,d
+         ADDA    p1,d
+         STA     seed,d
+         LDA     p1,d
+         SUBA    1,i
+         STA     p1,d
+         BR      multiply
+
+adder:   LDA     seed,d
+         ADDA    p2,d
+         STA     seed,d
+
+moduu:    
 
 
 
