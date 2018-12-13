@@ -21,13 +21,13 @@ main:    STRO    msg1,d
          STRO    msg2,d
          DECI    divisor,d
          
-modulo:  LDA     dend,d   ; Temp =  divisor - dend
+modulo:  LDA     dend,d   ; Temp =  dend - divisor
          SUBA    divisor,d
          STA     temp,d
          LDA     temp,d
          CPA     0,i         ; if (temp >= 0)
          BRLT    end
-         LDA     dend,d   ; divisor = divisor - dend
+         LDA     dend,d   ; dend = dend - divisor
          SUBA    divisor,d
          STA     dend,d
          LDA     ans,d       ; ans = ans + 1
@@ -38,7 +38,7 @@ modulo:  LDA     dend,d   ; Temp =  divisor - dend
 end:     STRO    msg3,d
          DECO    ans,d
          STRO    msg4,d
-         DECO    divisor,d
+         DECO    dend,d
          
           STOP      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -56,4 +56,6 @@ ans:     .BLOCK  2
 remain:  .BLOCK  2
 temp:    .BLOCK  2
 
-         .END- ;ERROR: Malformed decimal constant.
+         .END
+
+ 
