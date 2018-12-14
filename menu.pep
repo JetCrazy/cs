@@ -4,8 +4,8 @@
 ;        Purpose: This program will present a menu to the user allowing
 ;                 them to select one of several programs to execute.
 ;
-;        Author: Bill Myers
-;        Date: 11/28/2018
+;        Author: Anthony Siemsen
+;        Date: 12/4/2018
 ;
 ;        Input values: Various values will be prompted from the user 
 ;        Output values: Various output depending on the app selected
@@ -19,12 +19,20 @@
 ;        CODE SECTION 
 ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
-main:    STRO    title, d                 ; display the main menu
+main:    LDA     0,i
+         STA     flagg,d
+
+menu:    CALL    reset1
+         STRO    title, d                 ; display the main menu
          STRO    menu1, d
          STRO    menu2, d
          STRO    menu3, d         
          STRO    menu4, d
          STRO    menu5, d
+         STRO    menu6, d
+         STRO    menu7, d
+         STRO    menu8, d
+         STRO    menu9, d
 
          STRO    title2, d                ; prompt the user for input
          DECI    select, d                ; read the users input
@@ -34,30 +42,50 @@ option1: LDA     select, d
          CPA     1, i
          BRNE    option2
          CALL    maximus
-         BR      exit
+         BR      menu
 
          ; process option 2
 option2: CPA     2, i
          BRNE    option3 
          CALL    trisort   
-         BR      exit
+         BR      menu
 
          ; process option 3
 option3: CPA     3, i
          BRNE    option4 
          CALL    looper  
-         BR      exit
+         BR      menu
 
          ; process option 4
 option4: CPA     4, i
          BRNE    option5 
          CALL    multi 
-         BR      exit
+         BR      menu
 
          ; process option 5
 option5: CPA     5, i
-         BRNE    error 
+         BRNE    option6 
          CALL    square     
+         BR      menu
+
+option6: CPA     6, i
+         BRNE    option7 
+         CALL    modulo     
+         BR      menu
+
+option7: CPA     7, i
+         BRNE    option8
+         CALL    fib     
+         BR      menu
+
+option8: CPA     8, i
+         BRNE    option9 
+         CALL    rand     
+         BR      menu
+
+option9: CPA     9, i
+         BRNE    error 
+         CALL    reset1    
          BR      exit
 
          ; user entered invalid input
@@ -164,13 +192,13 @@ looper:  LDA 0,i
          STA l_count,d
 loop:    LDA l_count,d
          CPA 10,i
-         BRGE l_done
+         BRGE l_done         ; While (count < 10)
          DECO l_count,d
          CHARO l_space,d
-         LDA l_count,d
+         LDA l_count,d       ; count = count + 1
          ADDA 1,i
          STA l_count,d
-         BR  loop
+         BR  loop            ; Back to loop
 
 
 l_done:  RET0
@@ -234,6 +262,175 @@ s_square:LDA s_count,d
 s_end:   STRO s_msg,d
          DECO s_answer,d
 s_done:  RET0
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+;        Modulo
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+modulo:  STRO o_msg1,d 
+         DECI odivisor,d
+         STRO o_msg2,d 
+         DECI o_dend,d
+omodulo: LDA odivisor,d ; Temp = divisor - dend
+         SUBA o_dend,d 
+         STA o_temp,d
+         LDA o_temp,d
+         CPA 0,i ; if (temp >= 0)
+         BRLT o_end
+         LDA odivisor,d ; divisor = divisor - dend
+         SUBA o_dend,d
+         STA odivisor,d
+         LDA o_ans,d ; ans = ans + 1
+         ADDA 1,i            
+         STA o_ans,d
+         BR omodulo 
+
+o_end:   STRO o_msg3,d
+         DECO o_ans,d
+         STRO o_msg4,d
+         DECO odivisor,d
+         
+o_done:  RET0
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+;        Fibanacci Sequence
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+fib:     LDA 0,i ; Setting Variables 
+         STA fib_1,d 
+         STA fib_3,d
+         LDA 1,i
+         STA fib_2,d
+         LDA 2,i 
+         STA fib_4,d
+         STRO fib_ask,d ; Ask for what number
+         DECI fib_in,d
+fib_if:  LDA fib_in,d ; Checking if number was 0. 
+         CPA 0,i ;
+         BRNE fib_loop ; if (fib_in = 0)
+         DECO fib_1,d
+         BR exit
+fib_loop:LDA fib_4,d ;
+         CPA fib_in,d ; while (fib_4 <= n)
+         BRGT fibmsg ; If fib_4 is greater then n go to endmsg
+         ;;;;;;;
+         LDA fib_1,d 
+         ADDA fib_2,d ;fib_3 = fib_2 + fib_1
+         STA fib_3,d
+         ;;;; 
+         LDA fib_2,d ; fib_1 = fib_2
+         STA fib_1,d
+         ;;;;    
+         LDA fib_3,d ; fib_2 = fib_3
+         STA fib_2,d
+         ;;;;;;;
+         LDA fib_4,d 
+         ADDA 1,i ; fib_4 = fib_4 + 1
+         STA fib_4,d
+         BR fib_loop ; Loop back to top
+
+fibmsg:  STRO fib_ans,d
+         DECO fib_2,d
+fibret:  RET0
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+;        Random number 
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+rand:    LDA 263,i ; Resetting Variables back to values
+         STA p1,d
+         LDA 71,i
+         STA p2,d
+         LDA 100,i
+         STA n,d
+         LDA 0,i ;; Resetting the lg_temp ** Must do so your seed isn't messed up 
+         STA lg_temp,d
+         ;; Checking to see if a seed has already been set
+         LDA flagg,d
+         CPA 0,i
+         BRNE randMp 
+         STRO msg1_1,d
+         DECI seed,d
+         LDA 1,i
+         STA flagg,d
+
+randMp:  LDA p1,d
+         CPA 0,i
+         ;; go to add
+         BRLE adder
+         ;; Executing Multiplier (263 * seed)
+         LDA lg_temp,d
+         ADDA seed,d
+         STA lg_temp,d
+         LDA p1,d
+         SUBA 1,i
+         STA p1,d
+         BR randMp
+
+adder:   LDA lg_temp,d
+         ADDA p2,d ;; Adding 71 (lg_temp + 71)
+         STA lg_temp,d
+
+moduu:   LDA lg_temp,d ; Sets a checker for mod. 
+         SUBA n,d
+         STA mod_temp,d
+         ;; Executing Modulo (Refer to modulo for completely commented code. The edited 
+         ;; version of the modulo for this specifc program will be commented
+         ;; (lg_temp / 100) *** The remainder is the answer. Take the remainder and store into seed. 
+         LDA mod_temp,d
+         CPA 0,i
+         BRLT resp
+         LDA lg_temp,d
+         SUBA n,d
+         STA lg_temp,d 
+         LDA modCount,d ;; modCount is the counter for modulo
+         ADDA 1,i
+         STA modCount,d
+         BR moduu
+
+resp:    LDA lg_temp,d
+         STA seed,d ; Stores the answer into seed and outputs the seed
+         DECO seed,d
+         STRO space,d
+
+randret:  RET0
+
+;;;;;;;;;
+reset1:  LDA     0,i ; Loads 0 into the accumlator 
+         STA m_num1,d ; Setting every variable back to 0
+         STA m_num2,d
+         STA t_num1,d
+         STA t_num2,d
+         STA t_num3,d
+         STA t_temp,d 
+         STA l_count,d
+         STA product,d
+         STA x_num1,d
+         STA x_num2,d
+         STA x_input,d
+         STA s_num,d
+         STA s_count,d
+         STA s_answer,d
+         STA odivisor,d
+         STA o_dend,d
+         STA o_ans,d
+         STA o_remain,d
+         STA o_remain,d
+         STA o_temp,d
+         STA fib_1,d
+         STA fib_2,d
+         STA fib_3,d
+         STA fib_4,d
+         STA fib_in,d
+         
+resett:  RET0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;
 ;        DATA SECTION 
@@ -250,6 +447,10 @@ menu2:   .ASCII  "     2. Run the TriSorter program \n\x00"
 menu3:   .ASCII  "     3. Run the Looper program \n\x00" 
 menu4:   .ASCII  "     4. Run the Multiplier program \n\x00"
 menu5:   .ASCII  "     5. Run the Squaring program \n\x00"
+menu6:   .ASCII  "     6. Run the Modulo program \n\x00"
+menu7:   .ASCII  "     7. Run the Fibanacci program \n\x00"
+menu8:   .ASCII  "     8. Run the Random Number program \n\x00"
+menu9:   .ASCII  "     9. Exit the program \n\x00"
 msg1:    .ASCII  "main(): Proceeding to function call\n\x00" 
 msg2:    .ASCII  "main(): Returned from function call\n\x00"
 exitmsg: .ASCII  "\nEnd of run\x00"
@@ -306,4 +507,43 @@ s_num:    .BLOCK 2
 s_count:  .BLOCK 2
 s_msg:    .ASCII "Your answer is: \x00"
 s_answer: .BLOCK 2
+
+;
+; Modulo Vairables and Strings
+;
+
+o_msg1: .ASCII "Input the Divisor: \x00" 
+o_msg2: .ASCII "Input the Dividend: \x00"
+o_msg3: .ASCII "\nThe Quotient is: \x00"
+o_msg4: .ASCII "\nThe Remainder is: \x00"
+odivisor: .BLOCK 2
+o_dend: .BLOCK 2
+o_ans: .BLOCK 2
+o_remain: .BLOCK 2
+o_temp: .BLOCK 2
+
+;
+; fib Vairables and Strings
+;
+fib_1: .BLOCK 2 
+fib_2: .BLOCK 2
+fib_3: .BLOCK 2
+fib_in: .BLOCK 2
+fib_4: .BLOCK 2
+fib_ask: .ASCII "\nPlease Choose A Number: \x00" 
+fib_ans: .ASCII "\nThe Answer is: \x00"
+
+;
+; Random Number Variables and Settings
+;
+msg1_1: .ASCII "Please enter the seed value: \x00" 
+p1: .BLOCK 2
+p2: .BLOCK 2
+n: .BLOCK 2
+flagg: .BLOCK 2
+seed: .BLOCK 2
+lg_temp: .BLOCK 2
+mod_temp:.BLOCK 2
+modCount:.BLOCK 2
+space: .ASCII "\n\x00"
          .END
