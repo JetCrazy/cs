@@ -11,7 +11,6 @@ public class Population
     private double avgIncrease;
     private int days;
     
-    Scanner input = new Scanner(System.in);
     public Population() {
         organisms = 0;
         avgIncrease = 0;
@@ -26,27 +25,14 @@ public class Population
     
     // Mutator Methods
     public void setOrganisms(int orgs) {
-        while (orgs < 2) {
-            System.out.println("Please Enter a valid number amount of Organisms");
-            orgs = input.nextInt();
-        }
-       
         organisms = orgs;
     }
     
     public void setAVG(double avg) {
-        while (avg < 0) {
-            System.out.println("Please Enter a valid AVG");
-            avg = input.nextInt();
-        }
         avgIncrease = avg;
     }
     
     public void setDays(int day) {
-        while (day < 1) {
-            System.out.println("Please Enter a valid number amount of Days");
-            day = input.nextInt();
-        }
         days = day;
     }
     
