@@ -22,9 +22,7 @@ public class Lottery
       }
         return lotteryCopy;
     }
-    
-    
-    
+
     private void generateNumbers() {
         int temp = 0;
         for(int i = 0; i < lotteryNumbers.length; i++) {
@@ -58,18 +56,4 @@ public class Lottery
     return count;
         
     }
-
-    public boolean checker(int num) {
-        int temp = 0;
-        for(int i = 0; i < lotteryNumbers.length; i++) {
-            System.out.printf("Please enter a number 0-9\n");
-            temp = input.nextInt();
-            boolean check = false;
-            for(int j = 0; j < i; j++) { // loops to check each value in the array
-                if (temp == LotteryNumbers[i]) { // if the random number generated == to any of the numbers already generated sets flag to false
-                    check = true;
-                }
-            }
-    }
-}
 }
