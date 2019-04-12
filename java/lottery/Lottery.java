@@ -7,7 +7,7 @@ import java.util.Random;
  */
 public class Lottery
 {
-    private int[] lotteryNumbers;
+    private static int[] lotteryNumbers;
     private int[] userNumbers;
     Random random = new Random();
     public Lottery() {
@@ -16,7 +16,11 @@ public class Lottery
     }
     
     public static int[] getLotteryNumbers() {
-        return lotteryNumbers;
+      int[] lotteryCopy = new int[lotteryNumbers.length];
+      for(int i = 0; i < lotteryNumbers.length; i++) {
+        lotteryCopy[i] = lotteryNumbers[i];
+      }
+        return lotteryCopy;
     }
     
     
@@ -28,9 +32,11 @@ public class Lottery
            // Checks if temp is in list
            boolean found = false; // flag 
            for(int j = 0; j < i; j++) { // loops to check each value in the array
-               if (temp == lotteryNumbers[i]) { // if the random number generated == to any of the numbers already generated sets flag to false
+           //System.out.printf("Number %d check %d\n", i, j); TESTING LOOP.
+               if (temp == lotteryNumbers[j]) { // if the random number generated == to any of the numbers already generated sets flag to false
                    found = true;
                }
+               //System.out.println(found); TESTING LOOP
            }
            if (!found) { // if found is still == to false, meaning no numbers we're the same then set the new number to the next value in array
                    lotteryNumbers[i] = temp;
@@ -52,5 +58,18 @@ public class Lottery
     return count;
         
     }
-}
 
+    public boolean checker(int num) {
+        int temp = 0;
+        for(int i = 0; i < lotteryNumbers.length; i++) {
+            System.out.printf("Please enter a number 0-9\n");
+            temp = input.nextInt();
+            boolean check = false;
+            for(int j = 0; j < i; j++) { // loops to check each value in the array
+                if (temp == LotteryNumbers[i]) { // if the random number generated == to any of the numbers already generated sets flag to false
+                    check = true;
+                }
+            }
+    }
+}
+}
