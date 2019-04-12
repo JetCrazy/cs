@@ -5,19 +5,36 @@ import java.util.Scanner;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class Main
+public class Driver
 {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         Lottery lottery = new Lottery();
         int[] userNumbers = new int[5];
-        int temp = 0;
+        
         for(int i = 0; i < userNumbers.length; i++) {
-            System.out.println("Please enter number 0-9");
-            temp = input.nextInt();
-            boolean checker = lottery.checker(temp)
-            userNumbers[i] = temp;
+            int temp = 0;
+           System.out.printf("Please enter a number 0-9\n");
+           temp = input.nextInt();
+           // Checks if temp is in list
+           boolean found = false; // flag 
+           for(int j = 0; j < i; j++) { // loops to check each value in the array
+           //System.out.printf("Number %d check %d\n", i, j); TESTING LOOP.
+               if (temp == userNumbers[j]) { // if the random number generated == to any of the numbers already generated sets flag to false
+                   found = true;
+               }
+               //System.out.println(found); TESTING LOOP
+           }
+           if (!found) { // if found is still == to false, meaning no numbers we're the same then set the new number to the next value in array
+                   userNumbers[i] = temp;
+               } else if(found = true) {
+                   System.out.printf("%d was already chosen! You cannot pick the same number.\n", temp);
+                   i--; // if a number was the same subtract the iteration counter and restart the loop   
+               } else if(temp < 0 || temp > 9) {
+                   System.out.printf("%d is not in the range of 0-9\n", temp);
+                }   
         }
+        
         
         int compare = lottery.compare(userNumbers);
         for (int i = 0; i < userNumbers.length; i++) {
