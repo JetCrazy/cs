@@ -5,22 +5,30 @@ import java.util.Scanner;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class Driver
+public class Main
 {
-    public static void main() {
+    public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
+        Lottery lottery = new Lottery();
         int[] userNumbers = new int[5];
         int temp = 0;
         for(int i = 0; i < userNumbers.length; i++) {
             System.out.println("Please enter number 0-9");
             temp = input.nextInt();
+            boolean checker = lottery.checker(temp)
             userNumbers[i] = temp;
         }
         
-        Lottery lottery = new Lottery();
-        System.out.println(lottery.compare(userNumbers));
-        System.out.println(lottery.getLotteryNumbers());
-        System.out.println("main(): end of program");
+        int compare = lottery.compare(userNumbers);
+        for (int i = 0; i < userNumbers.length; i++) {
+        System.out.printf("Lottery Number %d is: %d \n", i + 1, lottery.getLotteryNumbers()[i]);
+        }
+        // If compare returns 5 then they have won the lottery
+        if(compare == 5) {
+          System.out.printf("Congrats! You have won the lottery. All %d numbers were a match!\n", compare);
+        } else {
+          System.out.printf("Sorry, only %d numbers were a match\n", compare);
+        }
     }
 }
 
